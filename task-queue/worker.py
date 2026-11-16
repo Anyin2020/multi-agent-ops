@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """任务队列 Worker v2：真执行器（端口 8902）"""
+import os
 import sqlite3
 import json
 import threading
@@ -13,7 +14,7 @@ import sys
 sys.path.insert(0, "/data/taskqueue")
 from executor import execute
 
-DB = "/data/taskqueue/dispatch.db"
+DB = os.environ.get("TASKQUEUE_DB", "/data/taskqueue/dispatch.db")
 app = FastAPI(title="TaskQueue Worker v2")
 
 class WorkReq(BaseModel):

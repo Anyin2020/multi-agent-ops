@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """任务队列 Router：FastAPI 调度器（端口 8901）"""
+import os
 import sqlite3
 import uuid
 import threading
@@ -9,7 +10,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
 
-DB = "/data/taskqueue/dispatch.db"
+DB = os.environ.get("TASKQUEUE_DB", "/data/taskqueue/dispatch.db")
 app = FastAPI(title="TaskQueue Router")
 
 class DispatchReq(BaseModel):

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1018" viewBox="0 0 720 1018" font-family="system-ui, -apple-system, sans-serif">
+<rect width="720" height="1018" fill="#ffffff"/>
+<text x="20" y="36" font-size="22" fill="#1a1a1a" font-weight="bold">multi-agent-ops</text>
+<text x="20" y="58" font-size="13" fill="#666666">One person + a team of AI agents: departments, task packs, cross-model review, human decisions.</text>
+<rect x="210" y="76" width="300" height="54" rx="10" fill="#f0f0ee" stroke="#dddddd"/>
+<text x="360" y="100" font-size="15" fill="#1a1a1a" font-weight="bold" text-anchor="middle">Human</text>
+<text x="360" y="120" font-size="12" fill="#666666" text-anchor="middle">Decisions, veto, irreversible approvals</text>
+<line x1="360" y1="130" x2="360" y2="148" stroke="#888888" stroke-width="1.5"/>
+<polygon points="355,140 365,140 360,148" fill="#888888"/>
+<rect x="210" y="150" width="300" height="56" rx="10" fill="#1a1a1a" stroke="#dddddd"/>
+<text x="360" y="174" font-size="15" fill="#ffffff" font-weight="bold" text-anchor="middle">Coordinator — personal agent</text>
+<text x="360" y="194" font-size="12" fill="#cccccc" text-anchor="middle">Plans, dispatches, verifies, accepts</text>
+<line x1="360" y1="206" x2="360" y2="224" stroke="#888888" stroke-width="1.5"/>
+<polygon points="355,216 365,216 360,224" fill="#888888"/>
+<text x="372" y="219" font-size="11" fill="#888888">dispatch / receipts / acceptance</text>
+<rect x="20" y="226" width="213" height="72" rx="10" fill="#ffffff" stroke="#dddddd"/>
+<text x="32" y="250" font-size="13" fill="#1a1a1a" font-weight="bold">Executor — Antigravity</text>
+<text x="32" y="270" font-size="12" fill="#666666">Mac local</text>
+<text x="32" y="288" font-size="12" fill="#666666">Runs task packs literally</text>
+<rect x="253" y="226" width="213" height="72" rx="10" fill="#ffffff" stroke="#dddddd"/>
+<text x="265" y="250" font-size="13" fill="#1a1a1a" font-weight="bold">Ops — OpenClaw</text>
+<text x="265" y="270" font-size="12" fill="#666666">Cloud VM</text>
+<text x="265" y="288" font-size="12" fill="#666666">Deployment + scheduled jobs</text>
+<rect x="486" y="226" width="213" height="72" rx="10" fill="#ffffff" stroke="#dddddd"/>
+<text x="498" y="250" font-size="13" fill="#1a1a1a" font-weight="bold">Reviewers — cross-model</text>
+<text x="498" y="270" font-size="12" fill="#666666">A different model audits</text>
+<text x="498" y="288" font-size="12" fill="#666666">No self-review</text>
+<text x="20" y="330" font-size="14" fill="#1a1a1a" font-weight="bold">Departments (7)</text>
+<rect x="20" y="342" width="340" height="46" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="32" y="361" font-size="13" fill="#1a1a1a" font-weight="bold">Wealth Management</text>
+<text x="32" y="379" font-size="12" fill="#666666">Investing</text>
+<rect x="360" y="342" width="340" height="46" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="372" y="361" font-size="13" fill="#1a1a1a" font-weight="bold">Basic Operations</text>
+<text x="372" y="379" font-size="12" fill="#666666">Infrastructure &amp; ops</text>
+<rect x="20" y="396" width="340" height="46" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="32" y="415" font-size="13" fill="#1a1a1a" font-weight="bold">Engineering Development</text>
+<text x="32" y="433" font-size="12" fill="#666666">Engineering</text>
+<rect x="360" y="396" width="340" height="46" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="372" y="415" font-size="13" fill="#1a1a1a" font-weight="bold">Personal Secretary</text>
+<text x="372" y="433" font-size="12" fill="#666666">Day-to-day assistant</text>
+<rect x="20" y="450" width="340" height="46" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="32" y="469" font-size="13" fill="#1a1a1a" font-weight="bold">Copywriting</text>
+<text x="32" y="487" font-size="12" fill="#666666">Words, scripts, tone</text>
+<rect x="360" y="450" width="340" height="46" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="372" y="469" font-size="13" fill="#1a1a1a" font-weight="bold">Creative Production</text>
+<text x="372" y="487" font-size="12" fill="#666666">Images, video, decks</text>
+<rect x="20" y="504" width="680" height="46" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="32" y="523" font-size="13" fill="#1a1a1a" font-weight="bold">Platform Operations</text>
+<text x="32" y="541" font-size="12" fill="#666666">Publishing, distribution, follow-up</text>
+<text x="20" y="578" font-size="14" fill="#1a1a1a" font-weight="bold">Content pipeline</text>
+<rect x="20" y="590" width="190" height="50" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="32" y="610" font-size="13" fill="#1a1a1a" font-weight="bold">Copywriting</text>
+<text x="32" y="628" font-size="12" fill="#666666">Drafts the words</text>
+<text x="216" y="620" font-size="16" fill="#888888" font-weight="bold">→</text>
+<rect x="232" y="590" width="220" height="50" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="244" y="610" font-size="13" fill="#1a1a1a" font-weight="bold">Creative Production</text>
+<text x="244" y="628" font-size="12" fill="#666666">Makes the visuals</text>
+<text x="458" y="620" font-size="16" fill="#888888" font-weight="bold">→</text>
+<rect x="474" y="590" width="210" height="50" rx="8" fill="#ffffff" stroke="#dddddd"/>
+<text x="486" y="610" font-size="13" fill="#1a1a1a" font-weight="bold">Platform Operations</text>
+<text x="486" y="628" font-size="12" fill="#666666">Publishes &amp; follows up</text>
+<text x="20" y="670" font-size="14" fill="#1a1a1a" font-weight="bold">Mechanisms</text>
+<rect x="20" y="682" width="340" height="58" rx="8" fill="#f0f0ee" stroke="#dddddd"/>
+<text x="32" y="704" font-size="13" fill="#1a1a1a" font-weight="bold">Task packs</text>
+<text x="32" y="724" font-size="12" fill="#666666">Exact commands, red lines, hidden checks</text>
+<rect x="360" y="682" width="340" height="58" rx="8" fill="#f0f0ee" stroke="#dddddd"/>
+<text x="372" y="704" font-size="13" fill="#1a1a1a" font-weight="bold">20 dispatch rules</text>
+<text x="372" y="724" font-size="12" fill="#666666">ETA to the hour, P0/P1/P2, 2 failures escalate</text>
+<rect x="20" y="748" width="340" height="58" rx="8" fill="#f0f0ee" stroke="#dddddd"/>
+<text x="32" y="770" font-size="13" fill="#1a1a1a" font-weight="bold">4-node receipts</text>
+<text x="32" y="790" font-size="12" fill="#666666">Start, milestone, blocked, done</text>
+<rect x="360" y="748" width="340" height="58" rx="8" fill="#f0f0ee" stroke="#dddddd"/>
+<text x="372" y="770" font-size="13" fill="#1a1a1a" font-weight="bold">3 acceptance checks</text>
+<text x="372" y="790" font-size="12" fill="#666666">It runs, data is real, result is usable</text>
+<rect x="20" y="814" width="340" height="58" rx="8" fill="#f0f0ee" stroke="#dddddd"/>
+<text x="32" y="836" font-size="13" fill="#1a1a1a" font-weight="bold">3-gate review</text>
+<text x="32" y="856" font-size="12" fill="#666666">Self-test → different model → coordinator</text>
+<rect x="360" y="814" width="340" height="58" rx="8" fill="#f0f0ee" stroke="#dddddd"/>
+<text x="372" y="836" font-size="13" fill="#1a1a1a" font-weight="bold">Council</text>
+<text x="372" y="856" font-size="12" fill="#666666">Topics as files, queue checked every 30 min</text>
+<text x="20" y="890" font-size="12" fill="#555555">Base: task queue (Router + Worker, 5-table SQLite ledger) · learning check (check_learning.py)</text>
+<text x="20" y="922" font-size="14" fill="#1a1a1a" font-weight="bold">Roadmap</text>
+<rect x="20" y="934" width="108" height="28" rx="14" fill="#ffffff" stroke="#dddddd"/>
+<text x="74" y="952" font-size="12" fill="#1a1a1a" text-anchor="middle">Learning loop</text>
+<rect x="138" y="934" width="169" height="28" rx="14" fill="#ffffff" stroke="#dddddd"/>
+<text x="222" y="952" font-size="12" fill="#1a1a1a" text-anchor="middle">Department trust score</text>
+<rect x="317" y="934" width="94" height="28" rx="14" fill="#ffffff" stroke="#dddddd"/>
+<text x="364" y="952" font-size="12" fill="#1a1a1a" text-anchor="middle">Cost ledger</text>
+<rect x="20" y="972" width="122" height="28" rx="14" fill="#ffffff" stroke="#dddddd"/>
+<text x="81" y="990" font-size="12" fill="#1a1a1a" text-anchor="middle">Attention inbox</text>
+<rect x="152" y="972" width="190" height="28" rx="14" fill="#ffffff" stroke="#dddddd"/>
+<text x="247" y="990" font-size="12" fill="#1a1a1a" text-anchor="middle">Permission tiers L1/L2/L3</text>
+<text x="20" y="1006" font-size="11" fill="#888888">ops-manual · departments · task-packs · dispatch · review · council · task-queue · examples · adr · roadmap · docs</text>
+</svg>

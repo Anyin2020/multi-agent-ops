@@ -74,6 +74,10 @@ Python, and HTTP GET actions.
 
 ## Operations
 
+The database path defaults to `/data/taskqueue/dispatch.db` and can be
+overridden with the `TASKQUEUE_DB` environment variable, e.g.
+`TASKQUEUE_DB=$PWD/dispatch.db python3 router.py` for a local run.
+
 ```bash
 # Check status
 sudo systemctl status taskqueue-router taskqueue-worker

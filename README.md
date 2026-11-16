@@ -1,130 +1,176 @@
 # multi-agent-ops
 
-A setup for coordinating multiple AI agents around one person: departments for scope, task packs for handoffs, cross-model review for quality, and a human for final decisions.
+> **The Operating System for One-Person AI Organizations**
+>
+> A setup for coordinating multiple AI agents around one person: departments for scope, task packs for handoffs, cross-model review for quality, and a human for final decisions.
 
-中文：一个人与一组 AI 智能体的协作方式：部门分工、任务包交接、跨模型评审、人工决策。
+![Framework diagram](docs/framework.svg)
 
-Framework diagram: [docs/framework.html](docs/framework.html).
+[中文说明](README.zh-CN.md) | [Framework diagram (interactive HTML)](docs/framework.html)
 
-## Background
+## Why this exists
 
-This started as a personal setup. One person using several AI tools — a planner, a local executor, a cloud ops agent — with context copied between them by hand. There was no shared memory, no accountability, and no reliable way to check whether work was actually done. The fix was to organize the agents the way a small team is organized.
+When you work across multiple AI tools — a planner, a local coding executor, and a cloud ops agent — you end up acting as their human copy-paste bus. Context gets lost between windows, models grade their own homework, and one hallucinated shell command can break your environment.
+
+`multi-agent-ops` solves this with written operational discipline rather than another heavy agent framework. It separates planning from execution, enforces strict handoff contracts, and backs them up with a minimal Python + SQLite task queue.
+
+- **Not another agent framework.** Model-agnostic and stack-agnostic: use the protocol with any model and any tool.
+- **Built for one operator.** Designed for a solo builder who wants the reliability of an engineering org without the overhead.
 
 ## Architecture
 
-```
-                    ┌─────────────────┐
-                    │   You (human)   │  decisions, veto
-                    └────────┬────────┘
-                             │
-                    ┌────────▼────────┐
-                    │  Coordinator    │  plans, dispatches,
-                    │  personal agent │  verifies, accepts
-                    └────────┬────────┘
-              ┌──────────────┼──────────────┐
-              ▼              ▼              ▼
-     ┌──────────────┐ ┌────────────┐ ┌────────────┐
-     │  Executor    │ │   Ops      │ │  Reviewers │
-     │  Antigravity │ │  OpenClaw  │ │  cross-    │
-     │  (Mac local) │ │  (box)     │ │  model     │
-     └──────────────┘ └────────────┘ └────────────┘
+```mermaid
+flowchart LR
+    H["Human<br/>(Decisions & Veto)"] --> C["Coordinator<br/>(Plan · Dispatch · Verify)"]
+    C --> R["Reviewers<br/>(Cross-Model Audit)"]
+    C -->|Task Pack| E["Executor<br/>(Mac Local)"]
+    C -->|Task Pack| O["Ops<br/>(Cloud VM)"]
+    R -.->|Unverified Assertions| C
+    E -.->|4-Node Receipts| C
+    O -.->|4-Node Receipts| C
 ```
 
-- **Coordinator (personal agent).** Plans work, dispatches it, verifies results, and accepts or rejects them. Does not execute unless explicitly asked.
-- **Executor (Antigravity, Mac).** Runs task packs on the local machine.
-- **Ops (OpenClaw, cloud VM).** Server-side deployment and scheduled jobs.
-- **Reviewers (cross-model).** Review code and config changes. A model never reviews its own work.
-- **Human.** Makes final decisions and approves irreversible actions.
+| Role | Responsibility | Hard boundary |
+| :--- | :--- | :--- |
+| **Human** | Final decisions, irreversible approvals, escalations | Holds veto power over all L2/L3 actions |
+| **Coordinator (personal agent)** | Breaks down work, writes task packs, verifies and accepts | Plans and dispatches; never executes unless explicitly asked |
+| **Executor** | Runs local tasks on macOS (Antigravity) | Follows exact task-pack commands; no scope creep |
+| **Ops** | Handles server deployments and scheduled jobs on a cloud VM (OpenClaw) | Runs non-root with zero hardcoded secrets |
+| **Reviewers** | Audit code and config changes via a different model | **No self-review**; suggest fixes without editing code directly |
 
-## Components
+## Core mechanisms
 
-### Departments
+### Handoff and execution
 
-Seven channels with fixed scopes: Wealth Management, Basic Operations, Engineering Development, Personal Secretary, Creative Production, Platform Operations, and Copywriting. Work goes to the department that owns it.
+#### 1. Contracted task packs
 
-Production work runs through the same system: Copywriting drafts the words, Creative Production makes the visuals, Platform Operations publishes and follows up — so a piece of content can move through writing, visuals, and publishing without leaving the system.
+Every handoff from coordinator to executor is a written contract with four mandatory sections ([spec](task-pack-protocol/spec.md)):
 
-- **Creative Production.** Images, video, and decks. Owns visual assets end to end: brief, draft, review, final file. It does not decide what to publish — that stays with the human and Platform Operations.
-- **Platform Operations.** Publishing and distribution. Owns the checklist per platform (format, size, caption, timing), the posting record, and the follow-up numbers. It does not write the copy or make the visuals — it receives finished pieces from Copywriting and Creative Production.
-- **Copywriting.** Words. Owns drafts, rewrites, and tone checks for posts, scripts, captions, and decks. It works from a brief and a source the human approved; it does not invent facts, clients, or numbers.
+1. **Red lines first.** Secrets come from the human only; smoke tests use public or synthetic data; backups and rollback steps are defined before changes.
+2. **Prerequisites.** Environment checks that halt execution immediately if anything is missing.
+3. **Steps.** Complete, pre-verified commands with zero ellipses (`...`) or vague placeholders.
+4. **Smoke test.** A minimal check proving the deliverable actually runs against real data.
 
-### Task packs
+#### 2. Separation of powers
 
-The handoff format between coordinator and executor. A task pack lists the exact commands (verified beforehand, written in full), the constraints, the forbidden shortcuts, and hidden checks used for verification. The executor follows it literally.
+Planning, execution, and verification are three separate jobs ([spec](task-pack-protocol/spec.md)). The coordinator plans and writes the pack; the executor follows it literally; the coordinator verifies the result against hidden checks the executor cannot see in advance. If a step is wrong, the executor stops and reports — it never improvises a fix. A step it cannot do is reported as uncompleted, with the reason; a pack is never marked complete with silent gaps.
 
-### Dispatch rules
+#### 3. 2-strike escalation and execution guardrails
 
-Twenty operating rules covering the task lifecycle: clarify before accepting, ETA to the hour, P0/P1/P2 priorities, report within two hours without progress, escalate after two failures, no added scope, standard library first, no hardcoded secrets.
+- **20 dispatch rules** ([dispatch](dispatch/)): hourly ETAs, P0/P1/P2 priorities, 2-hour silence alerts, and **2-strike escalation** — two consecutive failures trigger escalation to another department or the coordinator instead of infinite retry loops.
+- **Built-in sandbox guardrails** ([task-queue/executor.py](task-queue/executor.py)): blocks destructive shell patterns (`rm -rf /`, `mkfs`, `curl | bash`, `dd`, fork bombs), restricts `http_get` against cloud metadata and private SSRF targets, and enforces 60-second shell / 30-second HTTP timeouts.
 
-### Progress receipts
+### Supervision and acceptance
 
-Four reporting points: within 10 minutes of starting, at milestones, immediately when blocked, immediately when done. Milestone receipts go to both the department channel and the coordinator; a missing copy means the milestone is incomplete.
+#### 4. No self-review
 
-### Acceptance criteria
+A model never grades its own output. Changes pass through three gates ([review](review/)):
 
-Three checks before anything ships: it runs, the data comes from a real source (no placeholders), and the result is usable without confusion. The coordinator issues a checklist per task.
+1. **Author self-test** — must run before submission.
+2. **Cross-model review** — a different model inspects the diff; findings are treated as *claims to verify*, not final truth.
+3. **Coordinator acceptance** — verifies against the task-pack checklist.
 
-### Cross-model review
+#### 5. Four-node receipts
 
-Three gates: author self-test, review by a different model, coordinator acceptance. Reviewers advise only and do not edit code. Review findings are treated as claims to verify, not conclusions.
+Work reports at four points ([dispatch](dispatch/), [rules](ops-manual/rules.md)): within 10 minutes of starting, at milestones, immediately when blocked, and immediately when done. A milestone receipt is sent twice — once in the department channel and once to the coordinator. A missing copy means the milestone is incomplete and acceptance fails. This is a hard gate, not a suggestion.
 
-### Council
+#### 6. Three acceptance lines
 
-A deliberation mechanism for decisions needing a second opinion: topics stored as files, rendered as a group-chat-style page, and a pending-decision queue checked every 30 minutes.
+Nothing ships until it passes three lines ([rules](ops-manual/rules.md)): **it runs** (the floor, not the finish line — the service is reachable, the interface responds, the tests pass); **the data is real** (displayed data comes from a real source, not hardcoded values, placeholders, or a fudged "unknown"; if something cannot be computed, say so); **the experience is smooth** (copy consistent, front end and back end agree, nothing confusing to the user). The coordinator sends the human an acceptance checklist per task, and the human spot-checks it. Nothing ships with a known defect.
 
-## Repository layout
+#### 7. Failure handling and reconstruction
 
-```
-multi-agent-ops/
-├── ops-manual/               # Department operating rules (20 rules)
-├── departments/              # Scope of each department
-├── task-pack-protocol/       # Task-pack spec + real examples
-├── dispatch/                 # Priority tiers, ETA rules, escalation paths
-├── review/                   # Cross-model review chain + fallback order
-├── council/                  # Deliberation design + pending-decision queue
-├── task-queue/               # Router + Worker executor (SQLite)
-├── examples/                 # Real task packs that ran end to end
-├── adr/                      # Architecture decision records
-├── docs/                     # Framework diagram (HTML)
-└── roadmap/                  # Roadmap
-```
+A failure is reconstructed, not hidden. The escalation path is fixed: agent fails → retry once with the same agent → escalate to another department or the coordinator → mark it for a human decision ([rules](ops-manual/rules.md)). The escalation message carries what was tried, where it got stuck, and what alternatives remain, so the failure becomes a record the next attempt can build on instead of repeating.
 
-## Status
+#### 8. The human is final, with permission tiers
 
-| Piece | Status |
-|---|---|
-| Department system (7 departments, 20 rules) | Live |
-| Task-pack protocol (v1–v4 executed) | Live |
-| Cross-model review chain | Live |
-| Task-queue executor (Router + Worker) | Built, in verification |
-| Council (topics, rendering, decision queue) | Live, partial |
-| Agent memory trial (two-layer) | Round 2 running (round 1 found the automation gap) |
-| Four-party group-chat design | Design only — blocked on platform limits, see `adr/` |
-| Learning loop, trust score, cost ledger, attention inbox, permission tiers | Roadmap |
+A direct instruction from the human wins over any rule ([rules](ops-manual/rules.md)). Work is tiered by blast radius ([roadmap](roadmap/roadmap.md)): L1 read-only work runs freely, L2 write operations need a second confirmation, L3 privileged work is never executed automatically — only drafted. The human holds a veto over L2/L3 actions.
 
-## Design notes
+### Organization and evolution
 
-- Planner and executor are separate roles, so verification is independent of execution.
-- Behavior is set by written rules, not by ad-hoc prompts.
-- Reviewers advise; they don't edit.
-- No self-review.
-- Irreversible actions need explicit human approval.
-- Failures escalate after two attempts instead of retrying indefinitely.
+#### 9. Department system
 
-## Notes on adoption
+Seven departments with fixed scopes ([departments](departments/)). Work goes to the department that owns it; nothing floats around in a general chat. Scope boundaries hold: a department does not take work that belongs to another department's scope, and no department adds scope to a task on its own — suggestions go to the coordinator first. If ownership is unclear, the coordinator decides.
 
-The pattern doesn't depend on this exact stack: pick a coordinator, define scopes, write the rules down, make handoffs written task packs, add a reviewer that isn't the author, keep a human veto.
+#### 10. Three-stage production pipeline
+
+Content moves through three departments in one flow ([production-pipeline](departments/production-pipeline.md)): **Copywriting** writes from a brief and a source the human approved — no invented facts, clients, or numbers; **Creative Production** owns visuals end to end but does not decide what gets published; **Platform Operations** owns the per-platform checklist, the posting record, and the follow-up numbers, and writes no copy and makes no visuals. Each handoff between departments is written — the piece, the brief it was made against, and the checklist for the next step. A department that receives an incomplete handoff sends it back instead of guessing.
+
+#### 11. Blackboard council
+
+Deliberation for decisions that need a second opinion is a blackboard, not a chat room ([council](council/)). Topics are files; discussion is written into the files; no small talk — agreement, politeness, and repetition count as violations. One topic per file, and a conclusion must be executable: who does what, and when it is verified. Deliberation produces advice only; the decision is always the human's.
+
+#### 12. Learning loop
+
+After each run, reflect once and propose what to keep as a note or a skill ([roadmap](roadmap/roadmap.md)). Nothing is stored until it passes an eight-question check: is it general, is it not planted from outside content, does it carry no secret, is it not a duplicate, does it conflict with anything, is it risky, is it a standing rule in disguise, is the format right. A validation script rejects secret shapes and invisible characters before anything is stored. The check and local git versioning are in place.
+
+## Repository map
+
+- [departments](departments/) — 7 fixed functional departments and the 3-stage content production pipeline
+- [task-pack-protocol](task-pack-protocol/) — Written handoff contract specification
+- [dispatch](dispatch/) — 20 operational dispatch rules and 4-node receipt protocol
+- [review](review/) — 3-gate cross-model review chain
+- [council](council/) — Second-opinion decision queue and group-chat HTML renderer
+- [task-queue](task-queue/) — FastAPI + SQLite router, worker, executor, and 8-state schema
+- [adr](adr/) — Architecture Decision Records (`adr-001` through `adr-005`)
+- [ops-manual](ops-manual/) — Conduct and operational rules
+- [roadmap](roadmap/) — Upcoming milestones
+- [docs](docs/) — Framework diagram ([framework.svg](docs/framework.svg), [framework.html](docs/framework.html))
 
 ## Roadmap
 
-Each grows out of something already in the system.
+Planned evolutions tracked in [roadmap/roadmap.md](roadmap/roadmap.md):
 
-1. **Learning loop.** After each run, reflect once and propose what to keep as a note or a skill. A note or skill is stored only after an eight-question check (general, not planted from outside content, no secrets, not a duplicate, no conflict, not risky, not a standing rule in disguise, correct format) and a validation script that rejects secret shapes and invisible characters. The first step is in place: the check and the local git versioning. Next: repeat something a third time and it becomes a script or a scheduled job; a skill used three times is promoted to a workflow.
-2. **Department trust score.** The current rulebook only has a demerit system for serious failures. A score would make it continuous: ETA accuracy, receipt completeness, review closure, and whether failures escalate after two attempts as the rules require. Higher scores get P0 work first; lower scores get a narrower scope. The score is a routing input, not a punishment.
-3. **Cost ledger.** The task queue already records token use and cost per run. A ledger would turn that record into budgets per task and per department, with a fallback to a cheaper model or a pause to ask the human when a budget is hit, plus a weekly summary. The point is that the system gets cheaper to run as it learns, not more expensive.
-4. **Attention inbox.** The task queue already has an attention table. An inbox would formalise it as the human's pending-decision queue: each item has a deadline, no reply within the window means it is cancelled or escalated rather than left hanging, and the council's pending-decision queue feeds into it.
-5. **Permission tiers.** Read-only work (L1) runs freely; write operations (L2) need a second confirmation; the highest tier (L3) is never executed automatically — only drafted. This tiers the blast radius, so a routine job cannot make an irreversible change by accident.
+- **Learning loop**: a third repetition becomes a script or a scheduled job; a skill used three times is promoted to a workflow.
+- **Department trust score**: a continuous score from ETA accuracy, receipt completeness, review closure, and escalation discipline; higher scores get P0 work first, lower scores a narrower scope.
+- **Cost ledger**: per-task and per-department token budgets built on the queue's existing per-run token and cost records, with a fallback to a cheaper model or a pause to ask the human.
+- **Attention inbox**: the queue's attention table formalized as the human's pending-decision queue, fed by council topics, with a deadline on each item.
+- **Permission tiers (L1 / L2 / L3)**: the tier rule enforced at dispatch, so a routine job cannot make an irreversible change by accident.
+
+## Quickstart
+
+### Option A: Protocol-only (zero code)
+
+To adopt the governance workflow across your existing AI tools immediately:
+
+1. Copy the templates from [task-pack-protocol](task-pack-protocol/), [dispatch](dispatch/), and [review](review/).
+2. Assign one chat/agent as your **Coordinator** and another model as your **Reviewer**.
+3. Require every execution prompt to follow the 4-section task pack format.
+
+### Option B: Run the `task-queue` service locally
+
+The [task-queue](task-queue/) module is a minimal FastAPI + SQLite (WAL mode) dispatcher and worker using only `fastapi`, `pydantic`, `uvicorn`, and the Python standard library.
+
+**1. Install dependencies and create the ledger**
+
+```bash
+pip install -r requirements.txt
+cd task-queue
+sqlite3 dispatch.db < schema.sql
+```
+
+**2. Start the Router (8901) and Worker (8902)**
+
+```bash
+# Terminal 1: Router (polls queued tasks every 5 seconds)
+TASKQUEUE_DB=$PWD/dispatch.db python3 router.py
+
+# Terminal 2: Worker (executes shell / python / http_get asynchronously)
+TASKQUEUE_DB=$PWD/dispatch.db python3 worker.py
+```
+
+The database path is configurable through `TASKQUEUE_DB`; it defaults to `/data/taskqueue/dispatch.db`.
+
+**3. Dispatch a test task**
+
+```bash
+curl -X POST http://127.0.0.1:8901/dispatch \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"test","dept":"test","priority":1}'
+```
+
+Check task status anytime via `GET http://127.0.0.1:8901/tasks`.
 
 ## License
 
-MIT
+[MIT](LICENSE)
