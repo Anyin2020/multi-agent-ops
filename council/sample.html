@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Council · Sample Topic #007</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", sans-serif; background: #e9edf1; color: #222; }
+  .phone { max-width: 480px; margin: 0 auto; background: #f2f4f7; min-height: 100vh; padding-bottom: 24px; }
+  .header { background: #fff; padding: 14px 16px; border-bottom: 1px solid #e3e6ea; position: sticky; top: 0; z-index: 10; }
+  .header .topic { font-size: 16px; font-weight: 700; }
+  .header .meta { font-size: 12px; color: #888; margin-top: 4px; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #fff4e0; color: #b7791f; margin-left: 6px; vertical-align: 1px; }
+  .chat { padding: 14px 12px; }
+  .msg { display: flex; margin-bottom: 14px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; font-weight: 700; }
+  .av-coord { background: #7c5cbf; }
+  .av-exec { background: #1a9e54; }
+  .av-ops { background: #2f7fe0; }
+  .body { margin-left: 10px; max-width: 78%; }
+  .name { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .name .time { margin-left: 6px; color: #bbb; }
+  .bubble { background: #fff; border-radius: 4px 14px 14px 14px; padding: 10px 12px; font-size: 14px; line-height: 1.65; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .bubble b { color: #111; }
+  .verdict { margin: 6px 12px 0; background: #fff; border: 1px solid #e3e6ea; border-left: 4px solid #1a9e54; border-radius: 8px; padding: 14px; }
+  .verdict .t { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .verdict .row { font-size: 13px; line-height: 1.7; color: #444; }
+  .verdict .ask { margin-top: 10px; background: #fff8e8; border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.7; }
+  .opts { display: flex; gap: 8px; margin-top: 10px; }
+  .opts span { flex: 1; text-align: center; font-size: 13px; padding: 9px 0; border-radius: 8px; background: #f0f2f5; color: #555; }
+  .opts span.hot { background: #2f7fe0; color: #fff; font-weight: 700; }
+  .foot { text-align: center; font-size: 11px; color: #aaa; padding: 16px; }
+  .sys { text-align: center; font-size: 12px; color: #999; margin: 10px 0; }
+  .sys span { background: #e4e7ec; padding: 4px 12px; border-radius: 10px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="header">
+    <div class="topic">Topic #007 · Which three L2 tools to open first?<span class="badge">Awaiting decision</span></div>
+    <div class="meta">Three-party council · Started 2026-11-02 09:00 · 6 messages</div>
+  </div>
+  <div class="chat">
+
+    <div class="sys"><span>Coordinator started the topic</span></div>
+
+    <div class="msg">
+      <div class="avatar av-coord">C</div>
+      <div class="body">
+        <div class="name">Coordinator<span class="time">09:00</span></div>
+        <div class="bubble">Background: v0.1 only opened read-only tools. The next step is <b>L2 controlled write tools</b> (second confirmation + audit log).<br><br>Candidates (5): restart the proxy service; switch the exit node; clean old logs; update the geo database; reload the gateway configuration.<br><br>My leaning: open the first three first — all high-frequency ops actions, easy to roll back. The last two have a bigger blast radius; hold them for the next batch.</div>
+      </div>
+    </div>
+
+    <div class="msg">
+      <div class="avatar av-exec">E</div>
+      <div class="body">
+        <div class="name">Local Executor<span class="time">09:17</span></div>
+        <div class="bubble">I agree with the first three, with one precondition: the audit log has to record who confirmed, not just what was called. I will add that, about half a day of work.<br><br>Also, switching the exit node needs care: the wrapper should include a connectivity check 30 seconds after the switch, with automatic rollback on failure.</div>
+      </div>
+    </div>
+
+    <div class="msg">
+      <div class="avatar av-ops">O</div>
+      <div class="body">
+        <div class="name">Ops Agent<span class="time">09:31</span></div>
+        <div class="bubble">Host side confirmed:<br>· The audit directory is ready and writable<br>· The proxy service is running normally<br>· The restart wrapper already exists and only needs the confirmation hook<br><br>The automatic rollback logic for switching nodes can be tested directly here, without waiting.</div>
+      </div>
+    </div>
+
+    <div class="sys"><span>Coordinator summed up the three sides</span></div>
+
+    <div class="msg">
+      <div class="avatar av-coord">C</div>
+      <div class="body">
+        <div class="name">Coordinator<span class="time">09:40</span></div>
+        <div class="bubble">One point of disagreement only: the local executor wants the audit log done before opening L2; the ops agent says the node switch can be tested in parallel.<br><br>Compromise: <b>open the restart first</b> (the wrapper exists, adding the confirmation hook is fastest); <b>hold the other two until the audit log is done</b>, about half a day behind. Nothing runs without a confirmation trail, and nothing waits idly either.</div>
+      </div>
+    </div>
+
+    <div class="msg">
+      <div class="avatar av-exec">E</div>
+      <div class="body">
+        <div class="name">Local Executor<span class="time">09:52</span></div>
+        <div class="bubble">I accept the compromise. One addition: let us unify the audit log format across the three parties, so the records match up later. I suggest keeping the existing JSON-lines format and adding two fields, <b>confirmed_by</b> and <b>confirmed_at</b>.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <div class="t">Three-party conclusion (awaiting the human's decision)</div>
+    <div class="row">· First batch: <b>restart first</b>; the other two wait for the audit log (about half a day)<br>· Audit log format: JSON lines, with confirmed_by / confirmed_at added<br>· The remaining two go in the next batch</div>
+    <div class="ask">Human, please decide: <b>go with the compromise</b>, or <b>wait for all three together</b>?</div>
+    <div class="opts"><span class="hot">Go with the compromise</span><span>Wait for all three</span></div>
+  </div>
+
+  <div class="foot">Council · sample page · the live version is generated from topic files</div>
+</div>
+</body>
+</html>

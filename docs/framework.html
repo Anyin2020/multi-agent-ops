@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>multi-agent-ops 框架图</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: #1a1a1a; background: #f6f6f4; margin: 0; padding: 24px; }
+  .card { max-width: 680px; margin: 0 auto; background: #fff; border: 1px solid #ddd; border-radius: 14px; padding: 20px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { font-size: 13px; color: #666; margin-bottom: 16px; }
+  .center { text-align: center; background: #f0f0ee; border: 1px solid #ddd; border-radius: 10px; padding: 10px; }
+  .center small { display: block; font-size: 12px; color: #666; margin-top: 2px; }
+  .accent { background: #1a1a1a; color: #fff; }
+  .accent small { color: #ccc; }
+  .arrow { text-align: center; color: #888; font-size: 12px; margin: 6px 0; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 13px; }
+  .box { border: 1px solid #ddd; border-radius: 10px; padding: 10px; }
+  .box small { display: block; font-size: 12px; color: #666; margin-top: 2px; }
+  .dept { border: 1px solid #ddd; border-radius: 8px; padding: 8px; }
+  .dept small { display: block; color: #666; margin-top: 2px; }
+  .dept.wide { grid-column: 1 / -1; }
+  h2 { font-size: 14px; margin: 18px 0 8px; }
+  .flow { display: flex; align-items: center; gap: 6px; font-size: 13px; flex-wrap: wrap; }
+  .flow span { border: 1px solid #ddd; border-radius: 8px; padding: 6px 10px; }
+  .mech { background: #f0f0ee; border-radius: 8px; padding: 10px; font-size: 13px; }
+  .mech small { display: block; color: #666; margin-top: 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; }
+  .chips span { border: 1px solid #ddd; border-radius: 20px; padding: 5px 10px; }
+  .base { font-size: 13px; color: #555; line-height: 1.8; }
+  .foot { font-size: 12px; color: #888; margin-top: 14px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>multi-agent-ops 框架图</h1>
+  <div class="sub">一个人 + 一组 AI 智能体：部门分工、任务包交接、跨模型评审、人工决策</div>
+
+  <div class="center"><b>人（主人）</b><small>决策、一票否决、批不可逆操作</small></div>
+  <div class="arrow">↓</div>
+  <div class="center accent"><b>总协调 personal agent</b><small>计划、派单、验货、验收</small></div>
+  <div class="arrow">↓ 派单 / 回执 / 验收</div>
+
+  <div class="grid3">
+    <div class="box"><b>执行 Antigravity</b><small>Mac 本地，按任务包跑</small></div>
+    <div class="box"><b>运维 OpenClaw</b><small>盒子部署、定时任务</small></div>
+    <div class="box"><b>评审 跨模型</b><small>异模型互审，不许自审</small></div>
+  </div>
+
+  <h2>部门：7 个</h2>
+  <div class="grid2">
+    <div class="dept"><b>Wealth Management</b><small>理财</small></div>
+    <div class="dept"><b>Basic Operations</b><small>基础运维</small></div>
+    <div class="dept"><b>Engineering Development</b><small>工程开发</small></div>
+    <div class="dept"><b>Personal Secretary</b><small>随身秘书</small></div>
+    <div class="dept"><b>Copywriting</b><small>文案、脚本、口径</small></div>
+    <div class="dept"><b>Creative Production</b><small>做图、做视频、做 PPT</small></div>
+    <div class="dept wide"><b>Platform Operations</b><small>发布、分发、数据复盘</small></div>
+  </div>
+
+  <h2>内容流水线</h2>
+  <div class="flow">
+    <span><b>Copywriting</b> 写稿</span> →
+    <span><b>Creative Production</b> 做图 / 视频</span> →
+    <span><b>Platform Operations</b> 发布跟进</span>
+  </div>
+
+  <h2>工作机制</h2>
+  <div class="grid2">
+    <div class="mech"><b>任务包</b><small>完整命令、禁区、隐藏验货点；v1–v4 已跑通</small></div>
+    <div class="mech"><b>派单规则 20 条</b><small>ETA 到小时、P0/P1/P2、失败两次升级</small></div>
+    <div class="mech"><b>四节点回执</b><small>开工 10 分钟、里程碑、阻塞、完工；里程碑双份</small></div>
+    <div class="mech"><b>验收三条线</b><small>跑通、数据实、体验顺</small></div>
+    <div class="mech"><b>三层评审</b><small>作者自测 → 异模型审 → personal agent 验收</small></div>
+    <div class="mech"><b>议事 Council</b><small>议题成文件、每 30 分钟查待拍板</small></div>
+  </div>
+
+  <h2>底座</h2>
+  <div class="base">任务队列 Router + Worker（SQLite 5 表，建成待验） · 记忆包两层试运行（第二轮在跑） · 网关降级链 · 学习校验 check_learning.py</div>
+
+  <h2>Roadmap</h2>
+  <div class="chips">
+    <span>学习回路</span>
+    <span>部门信任分</span>
+    <span>成本账本</span>
+    <span>注意力收件箱</span>
+    <span>权限分级 L1/L2/L3</span>
+  </div>
+
+  <div class="foot">仓库目录：ops-manual / departments / task-pack-protocol / dispatch / review / council / task-queue / examples / adr / roadmap / docs</div>
+</div>
+</body>
+</html>
