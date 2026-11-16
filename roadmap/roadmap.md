@@ -19,7 +19,7 @@ job; a skill used three times is promoted to a workflow.
 
 ## 2. Department trust score
 
-The current rulebook only has a demerit system for serious failures.
+The current rulebook records serious failures as failure records.
 A score makes it continuous: ETA accuracy, receipt completeness, review
 closure, and whether failures escalate after two attempts as the rules
 require. Higher scores get P0 work first; lower scores get a narrower

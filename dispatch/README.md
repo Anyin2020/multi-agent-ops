@@ -24,7 +24,7 @@ accepted for dispatch.
 - If there is no substantial progress 2 hours after accepting a task,
   the department reports the reason and a new ETA on its own initiative.
   It does not wait to be asked.
-- Three missed ETAs on serious work is recorded as a demerit (see below).
+- Three missed ETAs on serious work is written up as a failure record (see below).
 
 ## Progress receipts
 
@@ -56,12 +56,12 @@ Coordinator cannot fix it → mark it for a human decision
 - Escalation is not a failure to hide: the escalation message carries
   what was tried, where it got stuck, and what alternatives remain.
 
-## Accountability
+## Failure record
 
-- **Demerit system.** A serious failure (for example, 11 hours with
-  zero output, or three missed ETAs) is recorded once. A repeat leads
-  directly to merging the department or shrinking the scope of work it
-  is allowed to take.
+- **Failure record.** A serious failure (for example, 11 hours with
+  zero output, or three missed ETAs) is written up once: what was tried,
+  where it got stuck, and what changes. The write-up is kept as a
+  reference so the next attempt does not repeat it.
 - **Acceptance.** Nothing ships until it passes the three lines: it
   runs, the data is real, the experience is smooth. The coordinator
   issues an acceptance checklist per task; the human spot-checks it.

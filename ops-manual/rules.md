@@ -63,11 +63,12 @@
     A missing copy means the milestone is incomplete and acceptance fails.
     This is a hard gate, not a suggestion.
 
-## 5. Escalation and accountability
+## 5. Escalation
 
-16. **Demerit system.** A serious failure (for example, 11 hours with zero
-    output, or three missed ETAs) is recorded once. A repeat leads directly
-    to merging the department or shrinking its scope.
+16. **Failure record.** A serious failure (for example, 11 hours with zero
+    output, or three missed ETAs) is written up once: what was tried, where
+    it got stuck, and what changes. The write-up is kept as a reference so
+    the next attempt does not repeat it.
 17. **Escalation path.**
     ```
     Agent fails → retry once with the same agent
